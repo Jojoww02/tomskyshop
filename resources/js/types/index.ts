@@ -1,7 +1,7 @@
 import { LucideIcon } from 'lucide-react';
 
 export interface Auth {
-    user: User;
+    user: User | null;
 }
 
 export interface BreadcrumbItem {
@@ -27,6 +27,8 @@ export interface SharedData {
     auth: Auth;
     [key: string]: unknown;
 }
+
+export type PageProps<TPageProps extends Record<string, unknown> = Record<string, unknown>> = SharedData & TPageProps;
 
 export interface User {
     id: number;
