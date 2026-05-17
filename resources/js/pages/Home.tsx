@@ -5,8 +5,14 @@ import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/input';
 import { useState } from 'react';
+
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  icon: string | null;
+}
 
 interface Game {
   id: number;
@@ -16,12 +22,37 @@ interface Game {
   image_url: string | null;
   category: {
     name: string;
+    slug: string;
   };
   products_count?: number;
 }
 
+interface FeaturedProductGame {
+  name: string;
+  slug: string;
+}
+
+interface FeaturedProduct {
+  id: number;
+  name: string;
+  slug: string;
+  price: number;
+  original_price: number | null;
+  package_type: string | null;
+  game_currency_amount: string | null;
+  bonus_amount: string | null;
+  discount_percentage: number | null;
+  game: FeaturedProductGame | null;
+}
+
+type HomePageProps = PageProps<{
+  games: Game[];
+  categories: Category[];
+  featuredProducts: FeaturedProduct[];
+}>;
+
 export default function Home() {
-  const { games = [], featuredProducts = [], categories = [] } = usePage<PageProps>().props;
+  const { games, featuredProducts, categories } = usePage<HomePageProps>().props;
   const [searchQuery, setSearchQuery] = useState('');
 
   const filteredGames = games.filter((game: Game) =>
@@ -84,7 +115,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categories.map((category: any) => (
+            {categories.map((category) => (
               <Link
                 key={category.id}
                 href={`/games?category=${category.slug}`}
@@ -112,7 +143,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {games.slice(0, 8).map((game: Game) => (
+            {filteredGames.slice(0, 8).map((game: Game) => (
               <Link key={game.id} href={`/games/${game.slug}`}>
                 <Card className="group overflow-hidden bg-slate-900/80 border-slate-800 hover:border-violet-500/50 transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-violet-500/10">
                   <div className="aspect-video relative overflow-hidden">
@@ -165,7 +196,7 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {featuredProducts.slice(0, 4).map((product: any) => (
+              {featuredProducts.slice(0, 4).map((product) => (
                 <Link key={product.id} href={`/games/${product.game?.slug}`}>
                   <Card className="group overflow-hidden bg-slate-900/80 border-slate-800 hover:border-cyan-500/50 transition-all duration-300 hover:scale-105">
                     <div className="p-6">

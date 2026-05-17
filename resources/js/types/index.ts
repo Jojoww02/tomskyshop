@@ -28,6 +28,8 @@ export interface SharedData {
     [key: string]: unknown;
 }
 
+export type PageProps<TPageProps extends Record<string, unknown> = Record<string, unknown>> = SharedData & TPageProps;
+
 export interface User {
     id: number;
     name: string;

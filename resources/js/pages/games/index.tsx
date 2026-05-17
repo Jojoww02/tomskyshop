@@ -2,8 +2,14 @@ import { Head, usePage, Link } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+
+interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  icon: string | null;
+}
 
 interface Game {
   id: number;
@@ -13,12 +19,18 @@ interface Game {
   image_url: string | null;
   category: {
     name: string;
+    slug: string;
   };
   products_count?: number;
 }
 
+type GamesIndexPageProps = PageProps<{
+  games: Game[];
+  categories: Category[];
+}>;
+
 export default function GamesIndex() {
-  const { games = [], categories = [] } = usePage<PageProps>().props;
+  const { games, categories } = usePage<GamesIndexPageProps>().props;
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -64,7 +76,7 @@ export default function GamesIndex() {
                     Semua Game
                   </button>
                   
-                  {categories.map((category: any) => (
+                  {categories.map((category) => (
                     <button
                       key={category.id}
                       onClick={() => setSelectedCategory(category.slug)}

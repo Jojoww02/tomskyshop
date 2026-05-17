@@ -1,7 +1,6 @@
 import { Head, usePage, Link } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import AppLayout from '@/layouts/app-layout';
-import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
 
@@ -33,7 +32,7 @@ interface Game {
 }
 
 export default function GameShow() {
-  const { game, products = [] } = usePage<PageProps & { game: Game; products: Product[] }>().props;
+  const { game, products } = usePage<PageProps<{ game: Game; products: Product[] }>>().props;
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [targetUserId, setTargetUserId] = useState('');
 
