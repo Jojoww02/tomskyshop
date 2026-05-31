@@ -37,11 +37,18 @@ interface FeaturedProduct {
   name: string;
   slug: string;
   price: number;
+  base_price: number;
   original_price: number | null;
   package_type: string | null;
   game_currency_amount: string | null;
   bonus_amount: string | null;
   discount_percentage: number | null;
+  stock: number;
+  in_stock: boolean;
+  is_flash_sale: boolean;
+  is_flash_sale_active: boolean;
+  flash_sale_price: number | null;
+  flash_sale_ends_at: string | null;
   game: FeaturedProductGame | null;
 }
 
@@ -214,9 +221,9 @@ export default function Home() {
                         <span className="text-2xl font-bold text-white">
                           Rp {product.price?.toLocaleString('id-ID')}
                         </span>
-                        {product.original_price && (
+                        {(product.is_flash_sale_active ? product.base_price : product.original_price) && (
                           <span className="text-sm text-slate-500 line-through">
-                            Rp {product.original_price?.toLocaleString('id-ID')}
+                            Rp {(product.is_flash_sale_active ? product.base_price : product.original_price)?.toLocaleString('id-ID')}
                           </span>
                         )}
                       </div>
@@ -224,6 +231,12 @@ export default function Home() {
                       {product.discount_percentage && (
                         <span className="inline-block px-3 py-1 bg-pink-600/20 text-pink-400 text-xs font-medium rounded-full">
                           -{product.discount_percentage}%
+                        </span>
+                      )}
+
+                      {product.is_flash_sale_active && (
+                        <span className="inline-block ml-2 px-3 py-1 bg-violet-600/20 text-violet-300 text-xs font-medium rounded-full">
+                          Flash Sale
                         </span>
                       )}
 
@@ -237,6 +250,12 @@ export default function Home() {
                           </span>
                         )}
                       </div>
+
+                      {!product.in_stock && (
+                        <div className="mt-3 text-xs text-red-400">
+                          Stock habis
+                        </div>
+                      )}
                     </div>
                   </Card>
                 </Link>
