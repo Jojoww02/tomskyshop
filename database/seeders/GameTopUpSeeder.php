@@ -98,7 +98,7 @@ class GameTopUpSeeder extends Seeder
 
         $products = [
             // Mobile Legends Products
-            ['game_id' => 1, 'name' => '86 Diamonds', 'slug' => '86-diamonds', 'description' => 'Paket 86 Diamonds untuk Mobile Legends', 'price' => 20000, 'original_price' => 22000, 'package_type' => 'diamonds', 'game_currency_amount' => '86', 'bonus_amount' => '0', 'is_featured' => true],
+            ['game_id' => 1, 'name' => '86 Diamonds', 'slug' => '86-diamonds', 'description' => 'Paket 86 Diamonds untuk Mobile Legends', 'price' => 20000, 'original_price' => 22000, 'flash_sale_price' => 17500, 'is_flash_sale' => true, 'flash_sale_ends_at' => now()->addHours(12), 'package_type' => 'diamonds', 'game_currency_amount' => '86', 'bonus_amount' => '0', 'is_featured' => true],
             ['game_id' => 1, 'name' => '172 Diamonds', 'slug' => '172-diamonds', 'description' => 'Paket 172 Diamonds untuk Mobile Legends', 'price' => 40000, 'original_price' => 44000, 'package_type' => 'diamonds', 'game_currency_amount' => '172', 'bonus_amount' => '8', 'is_featured' => true],
             ['game_id' => 1, 'name' => '257 Diamonds', 'slug' => '257-diamonds', 'description' => 'Paket 257 Diamonds untuk Mobile Legends', 'price' => 60000, 'original_price' => 66000, 'package_type' => 'diamonds', 'game_currency_amount' => '257', 'bonus_amount' => '12', 'is_featured' => true],
             ['game_id' => 1, 'name' => '429 Diamonds', 'slug' => '429-diamonds', 'description' => 'Paket 429 Diamonds untuk Mobile Legends', 'price' => 100000, 'original_price' => 110000, 'package_type' => 'diamonds', 'game_currency_amount' => '429', 'bonus_amount' => '21', 'is_featured' => true],
@@ -108,7 +108,7 @@ class GameTopUpSeeder extends Seeder
             ['game_id' => 1, 'name' => '1412 Diamonds', 'slug' => '1412-diamonds', 'description' => 'Paket 1412 Diamonds untuk Mobile Legends', 'price' => 330000, 'original_price' => 363000, 'package_type' => 'diamonds', 'game_currency_amount' => '1412', 'bonus_amount' => '70', 'is_featured' => false],
 
             // Free Fire Products
-            ['game_id' => 2, 'name' => '50 UC', 'slug' => '50-uc', 'description' => 'Paket 50 UC untuk Free Fire', 'price' => 7000, 'original_price' => 8000, 'package_type' => 'uc', 'game_currency_amount' => '50', 'bonus_amount' => '0', 'is_featured' => true],
+            ['game_id' => 2, 'name' => '50 UC', 'slug' => '50-uc', 'description' => 'Paket 50 UC untuk Free Fire', 'price' => 7000, 'original_price' => 8000, 'flash_sale_price' => 6000, 'is_flash_sale' => true, 'flash_sale_ends_at' => now()->addHours(6), 'package_type' => 'uc', 'game_currency_amount' => '50', 'bonus_amount' => '0', 'is_featured' => true],
             ['game_id' => 2, 'name' => '100 UC', 'slug' => '100-uc', 'description' => 'Paket 100 UC untuk Free Fire', 'price' => 14000, 'original_price' => 16000, 'package_type' => 'uc', 'game_currency_amount' => '100', 'bonus_amount' => '5', 'is_featured' => true],
             ['game_id' => 2, 'name' => '200 UC', 'slug' => '200-uc', 'description' => 'Paket 200 UC untuk Free Fire', 'price' => 28000, 'original_price' => 32000, 'package_type' => 'uc', 'game_currency_amount' => '200', 'bonus_amount' => '10', 'is_featured' => true],
             ['game_id' => 2, 'name' => '500 UC', 'slug' => '500-uc', 'description' => 'Paket 500 UC untuk Free Fire', 'price' => 70000, 'original_price' => 80000, 'package_type' => 'uc', 'game_currency_amount' => '500', 'bonus_amount' => '25', 'is_featured' => false],

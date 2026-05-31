@@ -18,11 +18,14 @@ class Product extends Model
         'description',
         'price',
         'original_price',
+        'flash_sale_price',
         'image_url',
         'package_type',
         'game_currency_amount',
         'bonus_amount',
         'is_featured',
+        'is_flash_sale',
+        'flash_sale_ends_at',
         'is_active',
         'stock',
     ];
@@ -30,7 +33,10 @@ class Product extends Model
     protected $casts = [
         'price' => 'decimal:2',
         'original_price' => 'decimal:2',
+        'flash_sale_price' => 'decimal:2',
         'is_featured' => 'boolean',
+        'is_flash_sale' => 'boolean',
+        'flash_sale_ends_at' => 'datetime',
         'is_active' => 'boolean',
         'stock' => 'integer',
     ];
@@ -61,6 +67,28 @@ class Product extends Model
             return round((($this->original_price - $this->price) / $this->original_price) * 100);
         }
         return null;
+    }
+
+    public function isFlashSaleActive(): bool
+    {
+        if (!$this->is_flash_sale || !$this->flash_sale_price) {
+            return false;
+        }
+
+        if (!$this->flash_sale_ends_at) {
+            return true;
+        }
+
+        return $this->flash_sale_ends_at->isFuture();
+    }
+
+    public function getEffectivePrice(): float
+    {
+        if ($this->isFlashSaleActive()) {
+            return (float) $this->flash_sale_price;
+        }
+
+        return (float) $this->price;
     }
 
     public function getRouteKeyName(): string

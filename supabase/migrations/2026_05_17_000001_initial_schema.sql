@@ -49,6 +49,9 @@ CREATE TABLE products (
     game_currency_amount VARCHAR(50),
     bonus_amount VARCHAR(50),
     is_featured BOOLEAN DEFAULT FALSE,
+    is_flash_sale BOOLEAN DEFAULT FALSE,
+    flash_sale_price DECIMAL(12,2),
+    flash_sale_ends_at TIMESTAMP,
     is_active BOOLEAN DEFAULT TRUE,
     stock INTEGER DEFAULT -1 CHECK (stock = -1 OR stock >= 0),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -60,6 +63,8 @@ CREATE INDEX idx_products_game ON products(game_id);
 CREATE INDEX idx_products_slug ON products(slug);
 CREATE INDEX idx_products_price ON products(price);
 CREATE INDEX idx_products_active ON products(is_active);
+CREATE INDEX idx_products_flash_sale ON products(is_flash_sale);
+CREATE INDEX idx_products_flash_sale_ends_at ON products(flash_sale_ends_at);
 
 -- 4. Payment Methods Table
 CREATE TABLE payment_methods (
