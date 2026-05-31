@@ -1,11 +1,18 @@
 <?php
 
+use App\Http\Controllers\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\OrderController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function () {
+Route::get('/', function (Request $request) {
+    if ($request->user() && $request->user()->role === 'admin') {
+        return redirect()->route('admin.dashboard');
+    }
+
     $games = \App\Models\Game::with(['category'])
         ->active()
         ->orderBy('sort_order')
@@ -44,16 +51,30 @@ Route::get('/', function () {
         ->limit(4)
         ->get()
         ->map(function ($product) {
+            $isFlashSaleActive = $product->isFlashSaleActive();
+            $basePrice = (float) $product->price;
+            $effectivePrice = (float) $product->getEffectivePrice();
+            $flashSalePrice = $product->flash_sale_price ? (float) $product->flash_sale_price : null;
+
             return [
                 'id' => $product->id,
                 'name' => $product->name,
                 'slug' => $product->slug,
-                'price' => $product->price,
-                'original_price' => $product->original_price,
+                'price' => $effectivePrice,
+                'base_price' => $basePrice,
+                'original_price' => $product->original_price ? (float) $product->original_price : null,
+                'flash_sale_price' => $flashSalePrice,
+                'is_flash_sale' => (bool) $product->is_flash_sale,
+                'is_flash_sale_active' => $isFlashSaleActive,
+                'flash_sale_ends_at' => $product->flash_sale_ends_at,
                 'package_type' => $product->package_type,
                 'game_currency_amount' => $product->game_currency_amount,
                 'bonus_amount' => $product->bonus_amount,
-                'discount_percentage' => $product->getDiscountPercentage(),
+                'stock' => $product->stock,
+                'in_stock' => $product->stock === -1 || $product->stock > 0,
+                'discount_percentage' => $isFlashSaleActive && $flashSalePrice !== null && $basePrice > 0 && $basePrice > $flashSalePrice
+                    ? round((($basePrice - $flashSalePrice) / $basePrice) * 100)
+                    : $product->getDiscountPercentage(),
                 'game' => $product->game ? [
                     'name' => $product->game->name,
                     'slug' => $product->game->slug,
@@ -114,18 +135,32 @@ Route::get('/games/{slug}', function (string $slug) {
         ->firstOrFail();
 
     $products = $game->products->map(function ($product) {
+        $isFlashSaleActive = $product->isFlashSaleActive();
+        $basePrice = (float) $product->price;
+        $effectivePrice = (float) $product->getEffectivePrice();
+        $flashSalePrice = $product->flash_sale_price ? (float) $product->flash_sale_price : null;
+
         return [
             'id' => $product->id,
             'name' => $product->name,
             'slug' => $product->slug,
             'description' => $product->description,
-            'price' => $product->price,
-            'original_price' => $product->original_price,
+            'price' => $effectivePrice,
+            'base_price' => $basePrice,
+            'original_price' => $product->original_price ? (float) $product->original_price : null,
+            'flash_sale_price' => $flashSalePrice,
+            'is_flash_sale' => (bool) $product->is_flash_sale,
+            'is_flash_sale_active' => $isFlashSaleActive,
+            'flash_sale_ends_at' => $product->flash_sale_ends_at,
             'package_type' => $product->package_type,
             'game_currency_amount' => $product->game_currency_amount,
             'bonus_amount' => $product->bonus_amount,
             'is_featured' => $product->is_featured,
-            'discount_percentage' => $product->getDiscountPercentage(),
+            'stock' => $product->stock,
+            'in_stock' => $product->stock === -1 || $product->stock > 0,
+            'discount_percentage' => $isFlashSaleActive && $flashSalePrice !== null && $basePrice > 0 && $basePrice > $flashSalePrice
+                ? round((($basePrice - $flashSalePrice) / $basePrice) * 100)
+                : $product->getDiscountPercentage(),
         ];
     });
 
@@ -145,13 +180,43 @@ Route::get('/games/{slug}', function (string $slug) {
     ]);
 })->name('games.show');
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
+        return redirect()->route('admin.dashboard');
     })->name('dashboard');
+});
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('checkout', [OrderController::class, 'checkout'])->name('checkout');
+    Route::post('orders', [OrderController::class, 'store'])->name('orders.store');
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{orderNumber}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('orders/{orderNumber}/wheel', [OrderController::class, 'wheel'])->name('orders.wheel');
+    Route::post('orders/{orderNumber}/wheel', [OrderController::class, 'spinWheel'])->name('orders.wheel.spin');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/', function () {
+        return Inertia::render('admin/dashboard', [
+            'stats' => [
+                'games' => \App\Models\Game::count(),
+                'products' => \App\Models\Product::count(),
+                'orders' => \App\Models\Order::count(),
+                'users' => \App\Models\User::count(),
+            ],
+        ]);
+    })->name('dashboard');
+
+    Route::get('/products', [AdminProductController::class, 'index'])->name('products.index');
+    Route::get('/products/create', [AdminProductController::class, 'create'])->name('products.create');
+    Route::post('/products', [AdminProductController::class, 'store'])->name('products.store');
+    Route::get('/products/{product:id}/edit', [AdminProductController::class, 'edit'])->name('products.edit');
+    Route::put('/products/{product:id}', [AdminProductController::class, 'update'])->name('products.update');
+    Route::delete('/products/{product:id}', [AdminProductController::class, 'destroy'])->name('products.destroy');
+
+    Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order:order_number}', [AdminOrderController::class, 'show'])->name('orders.show');
+    Route::put('/orders/{order:order_number}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.status');
 });
 
 require __DIR__.'/settings.php';
