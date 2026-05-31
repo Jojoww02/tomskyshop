@@ -34,6 +34,12 @@ export interface User {
     id: number;
     name: string;
     email: string;
+    phone?: string | null;
+    user_id?: string | null;
+    role?: 'admin' | 'user';
+    balance?: number;
+    is_active?: boolean;
+    is_admin?: boolean;
     avatar?: string;
     email_verified_at: string | null;
     created_at: string;

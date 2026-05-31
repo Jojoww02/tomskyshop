@@ -1,4 +1,4 @@
-import { Head, usePage, Link } from '@inertiajs/react';
+import { Head, usePage, Link, router } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -10,13 +10,20 @@ interface Product {
   slug: string;
   description: string;
   price: number;
+  base_price: number;
   original_price: number | null;
+  flash_sale_price: number | null;
+  is_flash_sale: boolean;
+  is_flash_sale_active: boolean;
+  flash_sale_ends_at: string | null;
   image_url: string | null;
   package_type: string;
   game_currency_amount: string;
   bonus_amount: string;
   is_featured: boolean;
   discount_percentage: number | null;
+  stock: number;
+  in_stock: boolean;
 }
 
 interface Game {
@@ -108,9 +115,9 @@ export default function GameShow() {
                               <span className="text-xl font-bold text-white">
                                 Rp {product.price.toLocaleString('id-ID')}
                               </span>
-                              {product.original_price && (
+                              {(product.is_flash_sale_active ? product.base_price : product.original_price) && (
                                 <span className="text-sm text-slate-500 line-through">
-                                  Rp {product.original_price.toLocaleString('id-ID')}
+                                  Rp {(product.is_flash_sale_active ? product.base_price : product.original_price)?.toLocaleString('id-ID')}
                                 </span>
                               )}
                             </div>
@@ -118,6 +125,16 @@ export default function GameShow() {
                               <span className="inline-block mt-2 px-2 py-1 bg-pink-600/20 text-pink-400 text-xs font-medium rounded">
                                 -{product.discount_percentage}%
                               </span>
+                            )}
+
+                            {product.is_flash_sale_active && (
+                              <span className="inline-block mt-2 ml-2 px-2 py-1 bg-violet-600/20 text-violet-300 text-xs font-medium rounded">
+                                Flash Sale
+                              </span>
+                            )}
+
+                            {!product.in_stock && (
+                              <div className="mt-2 text-xs text-red-400">Stock habis</div>
                             )}
                           </div>
                         </div>
@@ -154,6 +171,12 @@ export default function GameShow() {
                           <span className="text-white font-bold">
                             Rp {product.price.toLocaleString('id-ID')}
                           </span>
+                          {product.is_flash_sale_active && (
+                            <div className="text-xs text-violet-300">Flash Sale</div>
+                          )}
+                          {!product.in_stock && (
+                            <div className="text-xs text-red-400">Habis</div>
+                          )}
                         </div>
                       </div>
                     </button>
@@ -182,6 +205,21 @@ export default function GameShow() {
                       <p className="text-xl font-bold text-white mt-2">
                         Rp {selectedProduct.price.toLocaleString('id-ID')}
                       </p>
+                      {(selectedProduct.is_flash_sale_active ? selectedProduct.base_price : selectedProduct.original_price) && (
+                        <p className="text-sm text-slate-500 line-through">
+                          Rp {(selectedProduct.is_flash_sale_active ? selectedProduct.base_price : selectedProduct.original_price)?.toLocaleString('id-ID')}
+                        </p>
+                      )}
+                      {selectedProduct.is_flash_sale_active && (
+                        <span className="mt-2 inline-flex rounded-full bg-violet-600/20 px-3 py-1 text-xs font-medium text-violet-300">
+                          Flash Sale
+                        </span>
+                      )}
+                      {!selectedProduct.in_stock && (
+                        <div className="mt-2 text-xs text-red-400">
+                          Stock habis
+                        </div>
+                      )}
                     </div>
 
                     <div>
@@ -199,7 +237,12 @@ export default function GameShow() {
 
                     <Button
                       className="w-full h-12 bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-500 hover:to-cyan-500 text-white font-bold rounded-lg"
-                      disabled={!targetUserId}
+                      disabled={!targetUserId || !selectedProduct.in_stock}
+                      onClick={() => {
+                        if (!selectedProduct || !targetUserId || !selectedProduct.in_stock) return;
+                        const url = `/checkout?product_id=${selectedProduct.id}&target_user_id=${encodeURIComponent(targetUserId)}`;
+                        router.visit(url);
+                      }}
                     >
                       Pilih Metode Pembayaran
                     </Button>
