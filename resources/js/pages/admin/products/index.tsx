@@ -3,6 +3,7 @@ import AppLayout from '@/layouts/app-layout';
 import { PageProps } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Plus, Edit, Trash2, Gamepad2, Filter } from 'lucide-react';
 
 interface PaginationLink {
   url: string | null;
@@ -25,7 +26,8 @@ interface GameOption {
 
 interface ProductRow {
   id: number;
-  game_id: number;
+  type: 'game_topup' | 'voucher_streaming';
+  game_id: number | null;
   name: string;
   slug: string;
   price: number;
@@ -38,6 +40,8 @@ interface ProductRow {
   package_type: string | null;
   game_currency_amount: string | null;
   bonus_amount: string | null;
+  voucher_category: string | null;
+  validity_period: string | null;
   is_featured: boolean;
   is_active: boolean;
   stock: number;
@@ -79,7 +83,10 @@ export default function AdminProductsIndex() {
               </Button>
             </Link>
             <Link href="/admin/products/create">
-              <Button className="bg-violet-600 hover:bg-violet-500">Tambah Produk</Button>
+              <Button className="bg-blue-600 hover:bg-blue-500">
+                <Plus className="h-4 w-4" />
+                Tambah Produk
+              </Button>
             </Link>
           </div>
         </div>
@@ -87,7 +94,8 @@ export default function AdminProductsIndex() {
         <Card className="border-slate-800 bg-slate-900/80">
           <CardContent className="p-6">
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                <Filter className="h-4 w-4 text-slate-400" />
                 <label className="text-sm text-slate-300">Filter game</label>
                 <select
                   value={filters.game_id ?? ''}
@@ -95,7 +103,7 @@ export default function AdminProductsIndex() {
                     const game_id = e.target.value ? Number(e.target.value) : null;
                     router.get('/admin/products', { game_id: game_id ?? undefined }, { preserveState: true, preserveScroll: true });
                   }}
-                  className="h-10 rounded-lg border border-slate-700 bg-slate-950 px-3 text-sm text-white"
+                  className="h-10 rounded-lg border border-slate-700 bg-slate-950 px-3 text-sm text-white cursor-pointer"
                 >
                   <option value="">Semua</option>
                   {games.map((g) => (
@@ -125,7 +133,12 @@ export default function AdminProductsIndex() {
                 <tbody>
                   {products.data.map((p) => (
                     <tr key={p.id} className="border-b border-slate-900/60 text-slate-200">
-                      <td className="py-3 pr-4">{p.game?.name ?? '-'}</td>
+                      <td className="py-3 pr-4">
+                        <div className="flex items-center gap-2">
+                          <Gamepad2 className="h-4 w-4 text-blue-400" />
+                          {p.game?.name ?? '-'}
+                        </div>
+                      </td>
                       <td className="py-3 pr-4">
                         <div className="font-medium text-white">{p.name}</div>
                         <div className="text-xs text-slate-500">{p.slug}</div>
@@ -162,17 +175,21 @@ export default function AdminProductsIndex() {
                         )}
                       </td>
                       <td className="py-3 pr-4">
-                        <div className="flex flex-wrap gap-1">
-                          <span className={`rounded-full px-2 py-0.5 text-xs ${p.is_active ? 'bg-emerald-600/20 text-emerald-300' : 'bg-slate-800 text-slate-300'}`}>
-                            {p.is_active ? 'Aktif' : 'Nonaktif'}
-                          </span>
-                          {p.is_featured && <span className="rounded-full bg-violet-600/20 px-2 py-0.5 text-xs text-violet-300">Unggulan</span>}
-                        </div>
-                      </td>
+                    <div className="flex flex-wrap gap-1">
+                      <span className={`rounded-full px-2 py-0.5 text-xs ${p.is_active ? 'bg-emerald-600/20 text-emerald-300' : 'bg-slate-800 text-slate-300'}`}>
+                        {p.is_active ? 'Aktif' : 'Nonaktif'}
+                      </span>
+                      {p.is_featured && <span className="rounded-full bg-blue-600/20 px-2 py-0.5 text-xs text-blue-300">Unggulan</span>}
+                      <span className={`rounded-full px-2 py-0.5 text-xs ${p.type === 'game_topup' ? 'bg-purple-600/20 text-purple-300' : 'bg-orange-600/20 text-orange-300'}`}>
+                        {p.type === 'game_topup' ? 'Game Top Up' : 'Voucher'}
+                      </span>
+                    </div>
+                  </td>
                       <td className="py-3 pr-4 text-right">
                         <div className="inline-flex gap-2">
                           <Link href={`/admin/products/${p.id}/edit`}>
                             <Button size="sm" variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800">
+                              <Edit className="h-3 w-3 mr-1" />
                               Edit
                             </Button>
                           </Link>
@@ -185,6 +202,7 @@ export default function AdminProductsIndex() {
                               router.delete(`/admin/products/${p.id}`, { preserveScroll: true });
                             }}
                           >
+                            <Trash2 className="h-3 w-3 mr-1" />
                             Hapus
                           </Button>
                         </div>

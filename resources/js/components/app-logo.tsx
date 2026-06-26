@@ -1,14 +1,23 @@
-import AppLogoIcon from './app-logo-icon';
+import TomSkyShopLogo from '../../assets/Tomskyshop_logo.png';
 
 export default function AppLogo() {
-    return (
-        <>
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md">
-                <AppLogoIcon className="size-5 fill-current text-white dark:text-black" />
-            </div>
-            <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-none font-semibold">Laravel Starter Kit</span>
-            </div>
-        </>
-    );
+  return (
+    <div className="flex items-center gap-3">
+      <div className="relative">
+        <img
+          src={TomSkyShopLogo}
+          alt="TomSkyShop"
+          className="h-10 w-10 rounded-lg object-cover shadow-sm shadow-blue-500/20"
+        />
+      </div>
+      <div className="flex flex-col leading-tight">
+        <span className="font-black text-xl text-white tracking-wide">
+          TOMSKYSHOP
+        </span>
+        <span className="text-xs text-slate-400">
+          Top Up Game Murah
+        </span>
+      </div>
+    </div>
+  );
 }
