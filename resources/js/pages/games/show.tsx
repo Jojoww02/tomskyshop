@@ -3,6 +3,29 @@ import { PageProps } from '@/types';
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { useState } from 'react';
+import { ArrowLeft, Gem, ShoppingCart } from 'lucide-react';
+
+// Import banner images
+import MobileLegendBanner from '../../../assets/mobile_legend.png';
+import FreeFireBanner from '../../../assets/free_fire.png';
+import PubgMobileBanner from '../../../assets/pubg_image.png';
+import GenshinImpactBanner from '../../../assets/genshin_impact.png';
+import ValorantBanner from '../../../assets/valorant.png';
+import HonorOfKingsBanner from '../../../assets/honor_of_kings.png';
+import CallOfDutyBanner from '../../../assets/call_of_duty_mobile.png';
+import LolBanner from '../../../assets/lol_image.png';
+
+// Map game slugs to banner images
+const bannerMap: Record<string, string> = {
+  'mobile-legends': MobileLegendBanner,
+  'free-fire': FreeFireBanner,
+  'pubg-mobile': PubgMobileBanner,
+  'genshin-impact': GenshinImpactBanner,
+  'valorant': ValorantBanner,
+  'honor-of-kings': HonorOfKingsBanner,
+  'call-of-duty': CallOfDutyBanner,
+  'league-of-legends': LolBanner,
+};
 
 interface Product {
   id: number;
@@ -48,34 +71,31 @@ export default function GameShow() {
 
   return (
     <AppLayout>
-      <Head title={`${game.name} - TomSkyShop`}>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-      </Head>
+      <Head title={`${game.name} - TomSkyShop`} />
 
-      <div className="min-h-screen bg-slate-950">
+      <div className="min-h-screen bg-[#1a1c23]">
         <div className="relative h-64 md:h-96 overflow-hidden">
-          {game.banner_url ? (
+          {bannerMap[game.slug] || game.banner_url ? (
             <img
-              src={game.banner_url}
+              src={bannerMap[game.slug] || game.banner_url}
               alt={game.name}
               className="w-full h-full object-cover"
             />
           ) : (
-            <div className="w-full h-full bg-gradient-to-br from-violet-900/50 to-cyan-900/50" />
+            <div className="w-full h-full bg-gradient-to-br from-[#1e40af]/50 to-[#3b82f6]/50" />
           )}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/80 to-slate-950/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#1a1c23] via-[#1a1c23]/80 to-[#1a1c23]/40" />
           
           <div className="absolute bottom-0 left-0 right-0 p-8">
             <div className="max-w-7xl mx-auto">
-              <Link href="/games" className="text-slate-400 hover:text-white mb-4 inline-block">
-                ← Kembali ke Daftar Game
+              <Link href="/games" className="text-[#8a8f9e] hover:text-white mb-4 inline-flex items-center gap-2 cursor-pointer transition-colors">
+                <ArrowLeft className="h-5 w-5" />
+                Kembali ke Daftar Game
               </Link>
               <h1 className="text-4xl md:text-5xl font-bold text-white font-orbitron mb-2">
                 {game.name}
               </h1>
-              <p className="text-lg text-slate-300">{game.category?.name}</p>
+              <p className="text-lg text-[#8a8f9e]">{game.category?.name}</p>
             </div>
           </div>
         </div>
@@ -85,7 +105,8 @@ export default function GameShow() {
             <div className="lg:col-span-2 space-y-8">
               {featuredProducts.length > 0 && (
                 <section>
-                  <h2 className="text-2xl font-bold text-white mb-6 font-orbitron">
+                  <h2 className="text-2xl font-bold text-white mb-6 font-orbitron flex items-center gap-2">
+                    <Gem className="h-6 w-6 text-blue-400" />
                     Paket Unggulan
                   </h2>
                   <div className="grid md:grid-cols-2 gap-4">
@@ -93,26 +114,26 @@ export default function GameShow() {
                       <button
                         key={product.id}
                         onClick={() => setSelectedProduct(product)}
-                        className={`text-left p-6 rounded-2xl border-2 transition-all duration-300 ${
+                        className={`text-left p-6 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${
                           selectedProduct?.id === product.id
-                            ? 'bg-violet-600/20 border-violet-500'
-                            : 'bg-slate-900/80 border-slate-800 hover:border-violet-500/50'
+                            ? 'bg-gradient-to-r from-[#1e40af]/20 to-[#3b82f6]/20 border-blue-500 shadow-lg shadow-blue-500/20'
+                            : 'bg-[#232631] border-[#2a2d39] hover:border-blue-500/50 hover:bg-[#2a2d39]'
                         }`}
                       >
                         <div className="flex items-start gap-4">
-                          <div className="w-14 h-14 bg-gradient-to-br from-violet-600/30 to-cyan-600/30 rounded-xl flex items-center justify-center flex-shrink-0">
-                            <span className="text-2xl">💎</span>
+                          <div className="w-16 h-16 bg-gradient-to-br from-[#1e40af]/30 to-[#3b82f6]/30 rounded-2xl flex items-center justify-center flex-shrink-0">
+                            <Gem className="h-8 w-8 text-blue-400" />
                           </div>
                           <div className="flex-1">
-                            <h3 className="text-white font-bold mb-1">{product.name}</h3>
+                            <h3 className="text-white font-bold text-lg mb-1">{product.name}</h3>
                             <p className="text-sm text-slate-400 mb-2">
                               {product.game_currency_amount} {product.package_type}
                               {product.bonus_amount && (
-                                <span className="text-cyan-400 ml-1">+{product.bonus_amount} bonus</span>
+                                <span className="text-cyan-400 ml-1 font-semibold">+{product.bonus_amount} bonus</span>
                               )}
                             </p>
                             <div className="flex items-baseline gap-2">
-                              <span className="text-xl font-bold text-white">
+                              <span className="text-2xl font-bold text-white">
                                 Rp {product.price.toLocaleString('id-ID')}
                               </span>
                               {(product.is_flash_sale_active ? product.base_price : product.original_price) && (
@@ -121,20 +142,20 @@ export default function GameShow() {
                                 </span>
                               )}
                             </div>
-                            {product.discount_percentage && (
-                              <span className="inline-block mt-2 px-2 py-1 bg-pink-600/20 text-pink-400 text-xs font-medium rounded">
-                                -{product.discount_percentage}%
-                              </span>
-                            )}
-
-                            {product.is_flash_sale_active && (
-                              <span className="inline-block mt-2 ml-2 px-2 py-1 bg-violet-600/20 text-violet-300 text-xs font-medium rounded">
-                                Flash Sale
-                              </span>
-                            )}
-
+                            <div className="flex items-center gap-2 mt-2">
+                              {product.discount_percentage && (
+                                <span className="inline-flex px-2 py-1 bg-pink-600/20 text-pink-400 text-xs font-bold rounded-lg">
+                                  -{product.discount_percentage}%
+                                </span>
+                              )}
+                              {product.is_flash_sale_active && (
+                                <span className="inline-flex px-2 py-1 bg-gradient-to-r from-[#1e40af]/20 to-[#3b82f6]/20 text-blue-300 text-xs font-bold rounded-lg">
+                                  Flash Sale
+                                </span>
+                              )}
+                            </div>
                             {!product.in_stock && (
-                              <div className="mt-2 text-xs text-red-400">Stock habis</div>
+                              <div className="mt-2 text-xs text-red-400 font-semibold">Stock habis</div>
                             )}
                           </div>
                         </div>
@@ -145,7 +166,8 @@ export default function GameShow() {
               )}
 
               <section>
-                <h2 className="text-2xl font-bold text-white mb-6 font-orbitron">
+                <h2 className="text-2xl font-bold text-white mb-6 font-orbitron flex items-center gap-2">
+                  <Gem className="h-6 w-6 text-slate-400" />
                   Semua Paket
                 </h2>
                 <div className="grid md:grid-cols-2 gap-4">
@@ -153,30 +175,35 @@ export default function GameShow() {
                     <button
                       key={product.id}
                       onClick={() => setSelectedProduct(product)}
-                      className={`text-left p-5 rounded-xl border-2 transition-all duration-300 ${
+                      className={`text-left p-5 rounded-2xl border-2 transition-all duration-300 cursor-pointer ${
                         selectedProduct?.id === product.id
-                          ? 'bg-violet-600/20 border-violet-500'
-                          : 'bg-slate-900/80 border-slate-800 hover:border-violet-500/50'
+                          ? 'bg-gradient-to-r from-[#1e40af]/20 to-[#3b82f6]/20 border-blue-500 shadow-lg shadow-blue-500/20'
+                          : 'bg-[#232631] border-[#2a2d39] hover:border-blue-500/50 hover:bg-[#2a2d39]'
                       }`}
                     >
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl">💎</span>
+                      <div className="flex items-center gap-4">
+                        <Gem className="h-6 w-6 text-slate-400 flex-shrink-0" />
                         <div className="flex-1">
-                          <h3 className="text-white font-semibold text-sm">{product.name}</h3>
+                          <h3 className="text-white font-semibold">{product.name}</h3>
                           <p className="text-xs text-slate-400">
                             {product.game_currency_amount} {product.package_type}
+                            {product.bonus_amount && (
+                              <span className="text-cyan-400 ml-1">+{product.bonus_amount}</span>
+                            )}
                           </p>
                         </div>
                         <div className="text-right">
-                          <span className="text-white font-bold">
+                          <span className="text-white font-bold text-lg">
                             Rp {product.price.toLocaleString('id-ID')}
                           </span>
-                          {product.is_flash_sale_active && (
-                            <div className="text-xs text-violet-300">Flash Sale</div>
-                          )}
-                          {!product.in_stock && (
-                            <div className="text-xs text-red-400">Habis</div>
-                          )}
+                          <div className="flex items-center justify-end gap-2 mt-1">
+                            {product.is_flash_sale_active && (
+                              <span className="text-xs text-blue-300 font-semibold">Flash Sale</span>
+                            )}
+                            {!product.in_stock && (
+                              <span className="text-xs text-red-400 font-semibold">Habis</span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </button>
@@ -184,46 +211,59 @@ export default function GameShow() {
                 </div>
               </section>
 
-              <section className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6">
-                <h2 className="text-xl font-bold text-white mb-4">Deskripsi Game</h2>
-                <p className="text-slate-400 leading-relaxed">{game.description}</p>
+              <section className="bg-[#232631] border border-[#2a2d39] rounded-3xl p-8">
+                <h2 className="text-2xl font-bold text-white mb-6 font-orbitron">Deskripsi Game</h2>
+                <p className="text-[#8a8f9e] leading-relaxed text-lg">{game.description}</p>
               </section>
             </div>
 
             <div className="lg:col-span-1">
-              <div className="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 sticky top-4">
-                <h2 className="text-xl font-bold text-white mb-6">Pesan Sekarang</h2>
+              <div className="bg-[#232631] border border-[#2a2d39] rounded-3xl p-8 sticky top-4 shadow-2xl">
+                <h2 className="text-2xl font-bold text-white mb-8 flex items-center gap-2">
+                  <ShoppingCart className="h-7 w-7 text-blue-400" />
+                  Pesan Sekarang
+                </h2>
                 
                 {selectedProduct ? (
-                  <div className="space-y-4">
-                    <div className="p-4 bg-violet-600/10 border border-violet-600/30 rounded-xl">
-                      <p className="text-sm text-slate-400 mb-1">Paket Terpilih</p>
-                      <p className="text-white font-bold">{selectedProduct.name}</p>
-                      <p className="text-sm text-cyan-400 mt-1">
+                  <div className="space-y-6">
+                    <div className="p-6 bg-gradient-to-r from-[#1e40af]/10 to-[#3b82f6]/10 border border-blue-600/30 rounded-2xl">
+                      <p className="text-sm text-slate-400 mb-2">Paket Terpilih</p>
+                      <p className="text-white font-bold text-lg">{selectedProduct.name}</p>
+                      <p className="text-sm text-cyan-400 mt-1 font-semibold">
                         {selectedProduct.game_currency_amount} {selectedProduct.package_type}
+                        {selectedProduct.bonus_amount && (
+                          <span className="text-cyan-400 ml-1"> +{selectedProduct.bonus_amount} bonus</span>
+                        )}
                       </p>
-                      <p className="text-xl font-bold text-white mt-2">
+                      <p className="text-3xl font-bold text-white mt-4">
                         Rp {selectedProduct.price.toLocaleString('id-ID')}
                       </p>
                       {(selectedProduct.is_flash_sale_active ? selectedProduct.base_price : selectedProduct.original_price) && (
-                        <p className="text-sm text-slate-500 line-through">
+                        <p className="text-sm text-slate-500 line-through mt-1">
                           Rp {(selectedProduct.is_flash_sale_active ? selectedProduct.base_price : selectedProduct.original_price)?.toLocaleString('id-ID')}
                         </p>
                       )}
-                      {selectedProduct.is_flash_sale_active && (
-                        <span className="mt-2 inline-flex rounded-full bg-violet-600/20 px-3 py-1 text-xs font-medium text-violet-300">
-                          Flash Sale
-                        </span>
-                      )}
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {selectedProduct.is_flash_sale_active && (
+                          <span className="inline-flex rounded-full bg-gradient-to-r from-[#1e40af]/20 to-[#3b82f6]/20 px-3 py-1 text-xs font-bold text-blue-300">
+                            Flash Sale
+                          </span>
+                        )}
+                        {selectedProduct.discount_percentage && (
+                          <span className="inline-flex px-3 py-1 bg-pink-600/20 text-pink-400 text-xs font-bold rounded-full">
+                            -{selectedProduct.discount_percentage}%
+                          </span>
+                        )}
+                      </div>
                       {!selectedProduct.in_stock && (
-                        <div className="mt-2 text-xs text-red-400">
+                        <div className="mt-4 text-xs text-red-400 font-semibold">
                           Stock habis
                         </div>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-slate-300 mb-2">
+                      <label className="block text-sm font-medium text-slate-300 mb-3">
                         {game.name} ID / User ID
                       </label>
                       <input
@@ -231,12 +271,12 @@ export default function GameShow() {
                         value={targetUserId}
                         onChange={(e) => setTargetUserId(e.target.value)}
                         placeholder={`Masukkan ${game.name} ID`}
-                        className="w-full h-12 px-4 bg-slate-800 border border-slate-700 text-white placeholder:text-slate-500 focus:border-violet-500 rounded-lg"
+                        className="w-full h-14 px-5 bg-[#2a2d39] border border-[#3a3d49] text-white placeholder:text-[#8a8f9e] focus:border-blue-500 focus:bg-[#232631] rounded-2xl transition-all cursor-text"
                       />
                     </div>
 
                     <Button
-                      className="w-full h-12 bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-500 hover:to-cyan-500 text-white font-bold rounded-lg"
+                      className="w-full h-14 bg-gradient-to-r from-[#1e40af] to-[#3b82f6] hover:from-blue-700 hover:to-blue-500 text-white font-bold rounded-2xl text-lg shadow-lg shadow-blue-500/30 transition-all"
                       disabled={!targetUserId || !selectedProduct.in_stock}
                       onClick={() => {
                         if (!selectedProduct || !targetUserId || !selectedProduct.in_stock) return;
@@ -247,14 +287,14 @@ export default function GameShow() {
                       Pilih Metode Pembayaran
                     </Button>
 
-                    <p className="text-xs text-slate-500 text-center">
+                    <p className="text-xs text-[#8a8f9e] text-center">
                       Dengan memesan, Anda menyetujui Syarat & Ketentuan kami
                     </p>
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="text-5xl mb-4">📦</div>
-                    <p className="text-slate-400">Pilih paket untuk melanjutkan</p>
+                  <div className="text-center py-16">
+                    <div className="text-6xl mb-6">📦</div>
+                    <p className="text-[#8a8f9e] text-lg">Pilih paket untuk melanjutkan</p>
                   </div>
                 )}
               </div>

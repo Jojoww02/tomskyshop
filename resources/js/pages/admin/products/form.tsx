@@ -6,16 +6,19 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
+import { ArrowLeft, Save } from 'lucide-react';
 
 interface GameOption {
   id: number;
   name: string;
 }
 
+type ProductType = 'game_topup' | 'voucher_streaming';
 type Mode = 'create' | 'edit';
 
 interface ProductFormData {
-  game_id: number;
+  type: ProductType;
+  game_id: number | null;
   name: string;
   slug: string;
   description: string;
@@ -30,11 +33,15 @@ interface ProductFormData {
   is_featured: boolean;
   is_active: boolean;
   stock: number;
+  // Voucher & Streaming specific fields
+  voucher_category: string;
+  validity_period: string;
 }
 
 interface ProductEditData {
   id: number;
-  game_id: number;
+  type: ProductType;
+  game_id: number | null;
   name: string;
   slug: string;
   description: string | null;
@@ -49,6 +56,8 @@ interface ProductEditData {
   is_featured: boolean;
   is_active: boolean;
   stock: number;
+  voucher_category: string | null;
+  validity_period: string | null;
 }
 
 type AdminProductsFormProps = PageProps<{
@@ -68,6 +77,7 @@ export default function AdminProductsForm() {
   const { mode, games, product } = usePage<AdminProductsFormProps>().props;
 
   const form = useForm<ProductFormData>({
+    type: product?.type ?? 'game_topup',
     game_id: product?.game_id ?? (games[0]?.id ?? 0),
     name: product?.name ?? '',
     slug: product?.slug ?? '',
@@ -83,6 +93,8 @@ export default function AdminProductsForm() {
     is_featured: product?.is_featured ?? false,
     is_active: product?.is_active ?? true,
     stock: product?.stock ?? -1,
+    voucher_category: product?.voucher_category ?? '',
+    validity_period: product?.validity_period ?? '',
   });
 
   const title = mode === 'create' ? 'Tambah Produk' : 'Edit Produk';
@@ -105,6 +117,7 @@ export default function AdminProductsForm() {
           </div>
           <Link href="/admin/products">
             <Button variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800">
+              <ArrowLeft className="h-4 w-4 mr-1" />
               Kembali
             </Button>
           </Link>
@@ -125,21 +138,50 @@ export default function AdminProductsForm() {
             >
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="game_id">Game</Label>
+                  <Label htmlFor="type">Tipe Produk</Label>
                   <select
-                    id="game_id"
-                    value={form.data.game_id}
-                    onChange={(e) => form.setData('game_id', Number(e.target.value))}
-                    className="h-11 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 text-white"
+                    id="type"
+                    value={form.data.type}
+                    onChange={(e) => form.setData('type', e.target.value as ProductType)}
+                    className="h-11 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 text-white cursor-pointer"
                   >
-                    {games.map((g) => (
-                      <option key={g.id} value={g.id}>
-                        {g.name}
-                      </option>
-                    ))}
+                    <option value="game_topup">Game Top Up</option>
+                    <option value="voucher_streaming">Voucher & Streaming</option>
                   </select>
-                  {form.errors.game_id && <div className="text-sm text-red-400">{form.errors.game_id}</div>}
+                  {form.errors.type && <div className="text-sm text-red-400">{form.errors.type}</div>}
                 </div>
+
+                {form.data.type === 'game_topup' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="game_id">Game</Label>
+                    <select
+                      id="game_id"
+                      value={form.data.game_id}
+                      onChange={(e) => form.setData('game_id', Number(e.target.value))}
+                      className="h-11 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 text-white cursor-pointer"
+                    >
+                      {games.map((g) => (
+                        <option key={g.id} value={g.id}>
+                          {g.name}
+                        </option>
+                      ))}
+                    </select>
+                    {form.errors.game_id && <div className="text-sm text-red-400">{form.errors.game_id}</div>}
+                  </div>
+                )}
+
+                {form.data.type === 'voucher_streaming' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="voucher_category">Kategori Voucher</Label>
+                    <Input
+                      id="voucher_category"
+                      placeholder="Netflix / Spotify / Google Play"
+                      value={form.data.voucher_category}
+                      onChange={(e) => form.setData('voucher_category', e.target.value)}
+                    />
+                    {form.errors.voucher_category && <div className="text-sm text-red-400">{form.errors.voucher_category}</div>}
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="name">Nama Produk</Label>
@@ -153,38 +195,55 @@ export default function AdminProductsForm() {
                   {form.errors.slug && <div className="text-sm text-red-400">{form.errors.slug}</div>}
                 </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="package_type">Tipe Paket</Label>
-                  <Input
-                    id="package_type"
-                    placeholder="diamonds / uc / genesis_crystal"
-                    value={form.data.package_type}
-                    onChange={(e) => form.setData('package_type', e.target.value)}
-                  />
-                  {form.errors.package_type && <div className="text-sm text-red-400">{form.errors.package_type}</div>}
-                </div>
+                {form.data.type === 'game_topup' && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="package_type">Tipe Paket</Label>
+                      <Input
+                        id="package_type"
+                        placeholder="diamonds / uc / genesis_crystal"
+                        value={form.data.package_type}
+                        onChange={(e) => form.setData('package_type', e.target.value)}
+                      />
+                      {form.errors.package_type && <div className="text-sm text-red-400">{form.errors.package_type}</div>}
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="game_currency_amount">Denom</Label>
-                  <Input
-                    id="game_currency_amount"
-                    placeholder="86"
-                    value={form.data.game_currency_amount}
-                    onChange={(e) => form.setData('game_currency_amount', e.target.value)}
-                  />
-                  {form.errors.game_currency_amount && <div className="text-sm text-red-400">{form.errors.game_currency_amount}</div>}
-                </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="game_currency_amount">Denom</Label>
+                      <Input
+                        id="game_currency_amount"
+                        placeholder="86"
+                        value={form.data.game_currency_amount}
+                        onChange={(e) => form.setData('game_currency_amount', e.target.value)}
+                      />
+                      {form.errors.game_currency_amount && <div className="text-sm text-red-400">{form.errors.game_currency_amount}</div>}
+                    </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="bonus_amount">Bonus</Label>
-                  <Input
-                    id="bonus_amount"
-                    placeholder="0 / 8 / 25"
-                    value={form.data.bonus_amount}
-                    onChange={(e) => form.setData('bonus_amount', e.target.value)}
-                  />
-                  {form.errors.bonus_amount && <div className="text-sm text-red-400">{form.errors.bonus_amount}</div>}
-                </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="bonus_amount">Bonus</Label>
+                      <Input
+                        id="bonus_amount"
+                        placeholder="0 / 8 / 25"
+                        value={form.data.bonus_amount}
+                        onChange={(e) => form.setData('bonus_amount', e.target.value)}
+                      />
+                      {form.errors.bonus_amount && <div className="text-sm text-red-400">{form.errors.bonus_amount}</div>}
+                    </div>
+                  </>
+                )}
+
+                {form.data.type === 'voucher_streaming' && (
+                  <div className="space-y-2">
+                    <Label htmlFor="validity_period">Masa Berlaku</Label>
+                    <Input
+                      id="validity_period"
+                      placeholder="30 hari / 1 bulan / 1 tahun"
+                      value={form.data.validity_period}
+                      onChange={(e) => form.setData('validity_period', e.target.value)}
+                    />
+                    {form.errors.validity_period && <div className="text-sm text-red-400">{form.errors.validity_period}</div>}
+                  </div>
+                )}
 
                 <div className="space-y-2">
                   <Label htmlFor="price">Harga</Label>
@@ -294,12 +353,13 @@ export default function AdminProductsForm() {
 
               <div className="flex items-center justify-end gap-2">
                 <Button
-                  type="submit"
-                  disabled={form.processing}
-                  className="bg-violet-600 hover:bg-violet-500"
-                >
-                  {mode === 'create' ? 'Simpan' : 'Update'}
-                </Button>
+                    type="submit"
+                    disabled={form.processing}
+                    className="bg-blue-600 hover:bg-blue-500"
+                  >
+                    <Save className="h-4 w-4 mr-1" />
+                    {mode === 'create' ? 'Simpan' : 'Update'}
+                  </Button>
               </div>
             </form>
           </CardContent>

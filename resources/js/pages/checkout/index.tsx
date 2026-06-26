@@ -109,40 +109,41 @@ export default function CheckoutIndex() {
 
         <div className="grid gap-6 lg:grid-cols-5">
           <div className="lg:col-span-3">
-            <Card className="border-slate-800 bg-slate-900/80">
+            <Card className="border-[#2a2d39] bg-[#232631]/80">
               <CardContent className="p-6">
                 <div className="space-y-6">
-                  <div className="rounded-xl border border-slate-800 bg-slate-950 p-4">
-                    <div className="text-sm text-slate-400">Paket</div>
+                  <div className="rounded-xl border border-[#2a2d39] bg-[#1a1c23] p-4">
+                    <div className="text-sm text-[#8a8f9e]">Paket</div>
                     <div className="mt-1 text-lg font-semibold text-white">{product.name}</div>
-                    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-slate-300">
+                    <div className="mt-2 flex flex-wrap items-center gap-2 text-sm text-[#8a8f9e]">
                       {product.game_currency_amount && product.package_type && (
-                        <span className="rounded-full bg-slate-800 px-3 py-1">
+                        <span className="rounded-full bg-[#2a2d39] px-3 py-1">
                           {product.game_currency_amount} {product.package_type}
                         </span>
                       )}
                       {product.bonus_amount && (
-                        <span className="rounded-full bg-cyan-600/20 px-3 py-1 text-cyan-200">+{product.bonus_amount} bonus</span>
+                        <span className="rounded-full bg-[#3b82f6]/20 px-3 py-1 text-cyan-200">+{product.bonus_amount} bonus</span>
                       )}
                       {product.is_flash_sale_active && (
-                        <span className="rounded-full bg-violet-600/20 px-3 py-1 text-violet-200">Flash Sale</span>
+                        <span className="rounded-full bg-gradient-to-r from-[#1e40af]/20 to-[#3b82f6]/20 px-3 py-1 text-blue-200">Flash Sale</span>
                       )}
                     </div>
                   </div>
 
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="space-y-2">
-                      <Label htmlFor="target_user_id">User ID / Target</Label>
+                      <Label htmlFor="target_user_id" className="text-white">User ID / Target</Label>
                       <Input
                         id="target_user_id"
                         value={form.data.target_user_id}
                         onChange={(e) => form.setData('target_user_id', e.target.value)}
+                        className="bg-[#1a1c23] border-[#2a2d39] text-white placeholder:text-[#8a8f9e] focus:border-blue-500"
                       />
                       {form.errors.target_user_id && <div className="text-sm text-red-400">{form.errors.target_user_id}</div>}
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="quantity">Quantity</Label>
+                      <Label htmlFor="quantity" className="text-white">Quantity</Label>
                       <Input
                         id="quantity"
                         type="number"
@@ -150,13 +151,14 @@ export default function CheckoutIndex() {
                         max={10}
                         value={form.data.quantity}
                         onChange={(e) => form.setData('quantity', Number(e.target.value))}
+                        className="bg-[#1a1c23] border-[#2a2d39] text-white placeholder:text-[#8a8f9e] focus:border-blue-500"
                       />
                       {form.errors.quantity && <div className="text-sm text-red-400">{form.errors.quantity}</div>}
                     </div>
                   </div>
 
                   <div className="space-y-3">
-                    <Label>Metode Pembayaran</Label>
+                    <Label className="text-white">Metode Pembayaran</Label>
                     <div className="grid gap-3">
                       {paymentMethods.map((m) => (
                         <button
@@ -165,18 +167,18 @@ export default function CheckoutIndex() {
                           onClick={() => form.setData('payment_method', m.code)}
                           className={`flex items-center justify-between rounded-xl border px-4 py-3 text-left transition ${
                             form.data.payment_method === m.code
-                              ? 'border-violet-500 bg-violet-600/10'
-                              : 'border-slate-800 bg-slate-950 hover:border-slate-700'
+                              ? 'border-blue-500 bg-gradient-to-r from-[#1e40af]/10 to-[#3b82f6]/10'
+                              : 'border-[#2a2d39] bg-[#1a1c23] hover:border-[#3b82f6]'
                           }`}
                         >
                           <div>
                             <div className="font-medium text-white">{m.name}</div>
-                            <div className="mt-1 text-xs text-slate-400">
+                            <div className="mt-1 text-xs text-[#8a8f9e]">
                               {m.type.toUpperCase()}
                               {m.account_number && <span className="ml-2">• {m.account_number}</span>}
                             </div>
                           </div>
-                          <div className={`h-4 w-4 rounded-full border ${form.data.payment_method === m.code ? 'border-violet-400 bg-violet-500' : 'border-slate-600'}`} />
+                          <div className={`h-4 w-4 rounded-full border ${form.data.payment_method === m.code ? 'border-blue-400 bg-[#3b82f6]' : 'border-[#8a8f9e]'}`} />
                         </button>
                       ))}
                     </div>
@@ -184,28 +186,29 @@ export default function CheckoutIndex() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="discount_code">Kode Promo / Kupon (opsional)</Label>
+                    <Label htmlFor="discount_code" className="text-white">Kode Promo / Kupon (opsional)</Label>
                     <Input
                       id="discount_code"
                       placeholder="contoh: GACHA-XXXXXX / HEMAT10"
                       value={form.data.discount_code}
                       onChange={(e) => form.setData('discount_code', e.target.value.toUpperCase())}
+                      className="bg-[#1a1c23] border-[#2a2d39] text-white placeholder:text-[#8a8f9e] focus:border-blue-500"
                     />
                     {availableCoupons.length > 0 && (
-                      <div className="mt-3 rounded-xl border border-slate-800 bg-slate-950 p-4">
-                        <div className="mb-2 text-sm font-medium text-slate-200">Kupon kamu</div>
+                      <div className="mt-3 rounded-xl border border-[#2a2d39] bg-[#1a1c23] p-4">
+                        <div className="mb-2 text-sm font-medium text-[#8a8f9e]">Kupon kamu</div>
                         <div className="grid gap-2">
                           {availableCoupons.map((c) => (
                             <button
                               type="button"
                               key={c.code}
                               onClick={() => form.setData('discount_code', c.code)}
-                              className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-left hover:bg-slate-900"
+                              className="flex items-center justify-between rounded-lg border border-[#2a2d39] bg-[#232631]/60 px-3 py-2 text-left hover:bg-[#232631]"
                             >
                               <div className="text-sm text-white">
                                 {c.code} <span className="ml-2 text-cyan-300">-{c.discount_percent}%</span>
                               </div>
-                              <div className="text-xs text-slate-400">{formatDate(c.expires_at) ?? 'Tanpa expiry'}</div>
+                              <div className="text-xs text-[#8a8f9e]">{formatDate(c.expires_at) ?? 'Tanpa expiry'}</div>
                             </button>
                           ))}
                         </div>
@@ -217,7 +220,7 @@ export default function CheckoutIndex() {
                   <div className="flex items-center justify-end">
                     <Button
                       disabled={form.processing || !product.in_stock || !form.data.payment_method}
-                      className="bg-violet-600 hover:bg-violet-500"
+                      className="bg-gradient-to-r from-[#1e40af] to-[#3b82f6] hover:from-[#3b82f6] hover:to-[#60a5fa] text-white"
                       onClick={(e) => {
                         e.preventDefault();
                         form.post('/orders');
@@ -232,23 +235,23 @@ export default function CheckoutIndex() {
           </div>
 
           <div className="lg:col-span-2">
-            <Card className="border-slate-800 bg-slate-900/80">
+            <Card className="border-[#2a2d39] bg-[#232631]/80">
               <CardContent className="p-6">
                 <div className="text-lg font-semibold text-white">Ringkasan</div>
                 <div className="mt-4 space-y-3 text-sm">
-                  <div className="flex items-center justify-between text-slate-300">
+                  <div className="flex items-center justify-between text-[#8a8f9e]">
                     <span>Harga</span>
                     <span className="text-white">{formatRupiah(pricing.unit_price)}</span>
                   </div>
-                  <div className="flex items-center justify-between text-slate-300">
+                  <div className="flex items-center justify-between text-[#8a8f9e]">
                     <span>Quantity</span>
                     <span className="text-white">{form.data.quantity}</span>
                   </div>
-                  <div className="flex items-center justify-between border-t border-slate-800 pt-3 text-slate-300">
+                  <div className="flex items-center justify-between border-t border-[#2a2d39] pt-3 text-[#8a8f9e]">
                     <span>Total</span>
                     <span className="text-white">{formatRupiah(pricing.unit_price * form.data.quantity)}</span>
                   </div>
-                  <div className="text-xs text-slate-500">
+                  <div className="text-xs text-[#8a8f9e]">
                     Diskon akan dihitung setelah order dibuat dan kode tervalidasi.
                   </div>
                 </div>
