@@ -144,7 +144,7 @@ export default function Home() {
     centerPadding: '11%',
     arrows: true,
     beforeChange: (_: number, next: number) => setCurrentSlide(next),
-    customPaging: (_i: number) => (
+    customPaging: () => (
       <div className="w-2 h-2 rounded-full bg-white/40 hover:bg-white/60 transition-all"></div>
     ),
     dotsClass: 'slick-dots absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2',
