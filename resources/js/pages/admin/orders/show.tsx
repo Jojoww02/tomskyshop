@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { PageProps } from '@/types';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
+import { ArrowLeft, Save } from 'lucide-react';
 
 interface OrderDetail {
   id: number;
@@ -78,6 +79,7 @@ export default function AdminOrdersShow() {
           <div className="flex gap-2">
             <Link href="/admin/orders">
               <Button variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800">
+                <ArrowLeft className="h-4 w-4 mr-1" />
                 Kembali
               </Button>
             </Link>
@@ -181,7 +183,7 @@ export default function AdminOrdersShow() {
                     <select
                       value={form.data.status}
                       onChange={(e) => form.setData('status', e.target.value)}
-                      className="h-10 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 text-sm text-white"
+                      className="h-10 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 text-sm text-white cursor-pointer"
                     >
                       {statusOptions.map((s) => (
                         <option key={s} value={s}>
@@ -204,13 +206,14 @@ export default function AdminOrdersShow() {
                   </div>
 
                   <Button
-                    className="w-full bg-violet-600 hover:bg-violet-500"
+                    className="w-full bg-blue-600 hover:bg-blue-500"
                     disabled={form.processing}
                     onClick={(e) => {
                       e.preventDefault();
                       form.put(`/admin/orders/${order.order_number}/status`, { preserveScroll: true });
                     }}
                   >
+                    <Save className="h-4 w-4 mr-1" />
                     Simpan Status
                   </Button>
 

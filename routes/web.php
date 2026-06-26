@@ -82,10 +82,36 @@ Route::get('/', function (Request $request) {
             ];
         });
 
+    $flashSaleProducts = \App\Models\Product::with(['game'])
+        ->active()
+        ->where('is_flash_sale', true)
+        ->whereNotNull('flash_sale_ends_at')
+        ->where('flash_sale_ends_at', '>', now())
+        ->get()
+        ->map(function ($product) {
+            $basePrice = (float) $product->price;
+            $flashSalePrice = (float) $product->flash_sale_price;
+
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'originalPrice' => $product->original_price ? (float) $product->original_price : $basePrice,
+                'flashPrice' => $flashSalePrice,
+                'discount' => $basePrice > 0 && $basePrice > $flashSalePrice
+                    ? round((($basePrice - $flashSalePrice) / $basePrice) * 100)
+                    : 0,
+                'game' => $product->game ? $product->game->name : '',
+                'game_slug' => $product->game ? $product->game->slug : '',
+                'flash_sale_ends_at' => $product->flash_sale_ends_at,
+            ];
+        });
+
     return Inertia::render('Home', [
         'games' => $games,
         'categories' => $categories,
         'featuredProducts' => $featuredProducts,
+        'flashSaleProducts' => $flashSaleProducts,
     ]);
 })->name('home');
 
@@ -197,13 +223,49 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', function () {
+        $dailyData = [];
+        $now = now();
+        for ($i = 6; $i >= 0; $i--) {
+            $date = $now->copy()->subDays($i)->format('Y-m-d');
+            $ordersCount = \App\Models\Order::whereDate('created_at', $date)->count();
+            $salesTotal = \App\Models\Order::whereDate('created_at', $date)
+                ->where('status', \App\Models\Order::STATUS_COMPLETED)
+                ->sum('final_amount');
+            $dailyData[] = [
+                'date' => $now->copy()->subDays($i)->format('d M'),
+                'orders' => $ordersCount,
+                'sales' => (float) $salesTotal,
+            ];
+        }
+
+        // Get orders by status
+        $ordersByStatus = [
+            'pending' => \App\Models\Order::where('status', \App\Models\Order::STATUS_PENDING)->count(),
+            'processing' => \App\Models\Order::where('status', \App\Models\Order::STATUS_PROCESSING)->count(),
+            'completed' => \App\Models\Order::where('status', \App\Models\Order::STATUS_COMPLETED)->count(),
+            'failed' => \App\Models\Order::where('status', \App\Models\Order::STATUS_FAILED)->count(),
+            'cancelled' => \App\Models\Order::where('status', \App\Models\Order::STATUS_CANCELLED)->count(),
+        ];
+
+        // Get active users (users who have sessions in last 5 minutes)
+        $activeUsers = \Illuminate\Support\Facades\DB::table('sessions')
+            ->where('last_activity', '>=', now()->subMinutes(5)->timestamp)
+            ->whereNotNull('user_id')
+            ->distinct('user_id')
+            ->count('user_id');
+
         return Inertia::render('admin/dashboard', [
             'stats' => [
                 'games' => \App\Models\Game::count(),
                 'products' => \App\Models\Product::count(),
                 'orders' => \App\Models\Order::count(),
                 'users' => \App\Models\User::count(),
+                'activeUsers' => $activeUsers,
+                'totalSales' => (float) \App\Models\Order::where('status', \App\Models\Order::STATUS_COMPLETED)->sum('final_amount'),
+                'pendingOrders' => \App\Models\Order::where('status', \App\Models\Order::STATUS_PENDING)->count(),
             ],
+            'dailyData' => $dailyData,
+            'ordersByStatus' => $ordersByStatus,
         ]);
     })->name('dashboard');
 

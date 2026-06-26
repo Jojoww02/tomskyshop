@@ -54,29 +54,29 @@ export default function OrderShow() {
         </div>
 
         <div className="space-y-4">
-          <Card className="border-slate-800 bg-slate-900/80">
-            <CardContent className="p-6 text-slate-200">
+          <Card className="border-[#2a2d39] bg-[#232631]/80">
+            <CardContent className="p-6 text-white">
               <div className="flex flex-wrap gap-2 text-xs">
-                <span className="rounded-full bg-slate-800 px-2 py-0.5">{order.status}</span>
-                <span className="rounded-full bg-slate-800 px-2 py-0.5">{order.payment_status}</span>
-                {order.payment_method && <span className="rounded-full bg-slate-800 px-2 py-0.5">{order.payment_method}</span>}
+                <span className="rounded-full bg-[#2a2d39] px-2 py-0.5">{order.status}</span>
+                <span className="rounded-full bg-[#2a2d39] px-2 py-0.5">{order.payment_status}</span>
+                {order.payment_method && <span className="rounded-full bg-[#2a2d39] px-2 py-0.5">{order.payment_method}</span>}
               </div>
 
               <div className="mt-4 grid gap-3 md:grid-cols-2">
                 <div>
-                  <div className="text-xs text-slate-400">Produk</div>
+                  <div className="text-xs text-[#8a8f9e]">Produk</div>
                   <div className="font-semibold text-white">{order.product?.name ?? '-'}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">Target User ID</div>
+                  <div className="text-xs text-[#8a8f9e]">Target User ID</div>
                   <div className="font-semibold text-white">{order.target_user_id}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">Total</div>
+                  <div className="text-xs text-[#8a8f9e]">Total</div>
                   <div className="font-semibold text-white">{formatRupiah(order.total_amount)}</div>
                 </div>
                 <div>
-                  <div className="text-xs text-slate-400">Final</div>
+                  <div className="text-xs text-[#8a8f9e]">Final</div>
                   <div className="font-semibold text-white">{formatRupiah(order.final_amount)}</div>
                 </div>
               </div>
@@ -84,21 +84,21 @@ export default function OrderShow() {
           </Card>
 
           {order.payment && (
-            <Card className="border-slate-800 bg-slate-900/80">
-              <CardContent className="p-6 text-slate-200">
+            <Card className="border-[#2a2d39] bg-[#232631]/80">
+              <CardContent className="p-6 text-white">
                 <div className="text-sm font-semibold text-white">Pembayaran</div>
                 <div className="mt-3 grid gap-2 text-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Status</span>
+                    <span className="text-[#8a8f9e]">Status</span>
                     <span>{order.payment.status}</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Nominal</span>
+                    <span className="text-[#8a8f9e]">Nominal</span>
                     <span>{formatRupiah(order.payment.amount)}</span>
                   </div>
                   {order.payment.payment_number && (
                     <div className="flex items-center justify-between">
-                      <span className="text-slate-400">Nomor</span>
+                      <span className="text-[#8a8f9e]">Nomor</span>
                       <span>{order.payment.payment_number}</span>
                     </div>
                   )}

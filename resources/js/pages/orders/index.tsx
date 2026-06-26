@@ -43,24 +43,24 @@ export default function OrdersIndex() {
       <Head title="Orders" />
 
       <div className="mx-auto w-full max-w-7xl px-4 py-8">
-        <h1 className="font-orbitron text-3xl font-bold text-white">Orders</h1>
-        <p className="mt-1 text-slate-400">Riwayat transaksi Anda.</p>
+        <h1 className="font-orbitron text-3xl font-bold text-white">Riwayat Pesanan</h1>
+        <p className="mt-1 text-[#8a8f9e]">Riwayat transaksi Anda.</p>
 
         <div className="mt-6 space-y-3">
           {orders.data.map((o) => (
             <Link key={o.id} href={`/orders/${o.order_number}`} className="block">
-              <Card className="border-slate-800 bg-slate-900/80 transition hover:border-violet-500/40">
+              <Card className="border-[#2a2d39] bg-[#232631]/80 transition hover:border-blue-500/40">
                 <CardContent className="flex flex-col gap-2 p-6 md:flex-row md:items-center md:justify-between">
                   <div>
-                    <div className="text-sm text-slate-400">{o.order_number}</div>
+                    <div className="text-sm text-[#8a8f9e]">{o.order_number}</div>
                     <div className="text-lg font-semibold text-white">{o.game?.name ?? '-'}</div>
-                    <div className="text-sm text-slate-400">{o.product?.name ?? '-'}</div>
+                    <div className="text-sm text-[#8a8f9e]">{o.product?.name ?? '-'}</div>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-bold text-white">{formatRupiah(o.final_amount)}</div>
                     <div className="mt-1 flex items-center justify-end gap-2 text-xs">
-                      <span className="rounded-full bg-slate-800 px-2 py-0.5 text-slate-200">{o.status}</span>
-                      <span className="rounded-full bg-slate-800 px-2 py-0.5 text-slate-200">{o.payment_status}</span>
+                      <span className="rounded-full bg-[#2a2d39] px-2 py-0.5 text-white">{o.status}</span>
+                      <span className="rounded-full bg-[#2a2d39] px-2 py-0.5 text-white">{o.payment_status}</span>
                     </div>
                   </div>
                 </CardContent>

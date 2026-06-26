@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { PageProps } from '@/types';
 import { Head, Link, router, usePage } from '@inertiajs/react';
+import { ShoppingCart, Filter, Eye, CheckCircle2, XCircle } from 'lucide-react';
 
 interface PaginationLink {
   url: string | null;
@@ -54,7 +55,7 @@ function statusBadgeClass(status: string) {
   if (status === 'processing') return 'bg-cyan-600/20 text-cyan-300';
   if (status === 'failed') return 'bg-red-600/20 text-red-300';
   if (status === 'cancelled') return 'bg-slate-800 text-slate-300';
-  return 'bg-violet-600/20 text-violet-300';
+  return 'bg-blue-600/20 text-blue-300';
 }
 
 export default function AdminOrdersIndex() {
@@ -78,7 +79,8 @@ export default function AdminOrdersIndex() {
           <div className="flex gap-2">
             <Link href="/admin">
               <Button variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800">
-                Admin
+                <ShoppingCart className="h-4 w-4 mr-1" />
+                Dashboard
               </Button>
             </Link>
           </div>
@@ -87,7 +89,8 @@ export default function AdminOrdersIndex() {
         <Card className="border-slate-800 bg-slate-900/80">
           <CardContent className="p-6">
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
+                <Filter className="h-4 w-4 text-slate-400" />
                 <label className="text-sm text-slate-300">Filter status</label>
                 <select
                   value={filters.status ?? ''}
@@ -95,7 +98,7 @@ export default function AdminOrdersIndex() {
                     const status = e.target.value ? e.target.value : null;
                     router.get('/admin/orders', { status: status ?? undefined }, { preserveState: true, preserveScroll: true });
                   }}
-                  className="h-10 rounded-lg border border-slate-700 bg-slate-950 px-3 text-sm text-white"
+                  className="h-10 rounded-lg border border-slate-700 bg-slate-950 px-3 text-sm text-white cursor-pointer"
                 >
                   <option value="">Semua</option>
                   {statusOptions.map((s) => (
@@ -155,17 +158,19 @@ export default function AdminOrdersIndex() {
                         <div className="inline-flex flex-wrap justify-end gap-2">
                           <Link href={`/admin/orders/${o.order_number}`}>
                             <Button size="sm" variant="outline" className="border-slate-700 text-slate-200 hover:bg-slate-800">
+                              <Eye className="h-3 w-3 mr-1" />
                               Detail
                             </Button>
                           </Link>
                           {o.status === 'pending' && (
                             <Button
                               size="sm"
-                              className="bg-cyan-600 hover:bg-cyan-500"
+                              className="bg-blue-600 hover:bg-blue-500"
                               onClick={() => {
                                 router.put(`/admin/orders/${o.order_number}/status`, { status: 'processing' }, { preserveScroll: true });
                               }}
                             >
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
                               Accept
                             </Button>
                           )}
@@ -177,6 +182,7 @@ export default function AdminOrdersIndex() {
                                 router.put(`/admin/orders/${o.order_number}/status`, { status: 'completed' }, { preserveScroll: true });
                               }}
                             >
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
                               Selesai
                             </Button>
                           )}
@@ -190,6 +196,7 @@ export default function AdminOrdersIndex() {
                                 router.put(`/admin/orders/${o.order_number}/status`, { status: 'failed' }, { preserveScroll: true });
                               }}
                             >
+                              <XCircle className="h-3 w-3 mr-1" />
                               Gagal
                             </Button>
                           )}
