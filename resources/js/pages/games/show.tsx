@@ -6,14 +6,14 @@ import { useState } from 'react';
 import { ArrowLeft, Gem, ShoppingCart } from 'lucide-react';
 
 // Import banner images
-import MobileLegendBanner from '../../../assets/mobile_legend.png';
-import FreeFireBanner from '../../../assets/free_fire.png';
-import PubgMobileBanner from '../../../assets/pubg_image.png';
-import GenshinImpactBanner from '../../../assets/genshin_impact.png';
-import ValorantBanner from '../../../assets/valorant.png';
-import HonorOfKingsBanner from '../../../assets/honor_of_kings.png';
-import CallOfDutyBanner from '../../../assets/call_of_duty_mobile.png';
-import LolBanner from '../../../assets/lol_image.png';
+import MobileLegendBanner from '../../../assets/mobile_legend.webp';
+import FreeFireBanner from '../../../assets/free_fire.webp';
+import PubgMobileBanner from '../../../assets/pubg_image.webp';
+import GenshinImpactBanner from '../../../assets/genshin_impact.webp';
+import ValorantBanner from '../../../assets/valorant.webp';
+import HonorOfKingsBanner from '../../../assets/honor_of_kings.webp';
+import CallOfDutyBanner from '../../../assets/call_of_duty_mobile.webp';
+import LolBanner from '../../../assets/lol_image.webp';
 
 // Map game slugs to banner images
 const bannerMap: Record<string, string> = {
@@ -77,7 +77,7 @@ export default function GameShow() {
         <div className="relative h-64 md:h-96 overflow-hidden">
           {bannerMap[game.slug] || game.banner_url ? (
             <img
-              src={bannerMap[game.slug] || game.banner_url}
+              src={bannerMap[game.slug] ?? game.banner_url ?? undefined}
               alt={game.name}
               className="w-full h-full object-cover"
             />

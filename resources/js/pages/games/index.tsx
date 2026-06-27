@@ -4,14 +4,14 @@ import AppLayout from '@/layouts/app-layout';
 import { Card } from '@/components/ui/card';
 import { useState } from 'react';
 
-import MobileLegendPoster from '../../../assets/mobile_legend_poster.png';
-import FreeFirePoster from '../../../assets/free_fire_poster.png';
-import GenshinImpactPoster from '../../../assets/genshin_impact_poster.png';
-import ValorantPoster from '../../../assets/valorant_poster.png';
-import PubgMobilePoster from '../../../assets/pubg_mobile_poster.png';
-import LolPoster from '../../../assets/lol_poster.png';
-import HonorOfKingsPoster from '../../../assets/honor_of_kings_poster.png';
-import CallOfDutyPoster from '../../../assets/call_of_duty_poster.png';
+import MobileLegendPoster from '../../../assets/mobile_legend_poster.webp';
+import FreeFirePoster from '../../../assets/free_fire_poster.webp';
+import GenshinImpactPoster from '../../../assets/genshin_impact_poster.webp';
+import ValorantPoster from '../../../assets/valorant_poster.webp';
+import PubgMobilePoster from '../../../assets/pubg_mobile_poster.webp';
+import LolPoster from '../../../assets/lol_poster.webp';
+import HonorOfKingsPoster from '../../../assets/honor_of_kings_poster.webp';
+import CallOfDutyPoster from '../../../assets/call_of_duty_poster.webp';
 
 interface Category {
   id: number;

@@ -1,5 +1,5 @@
 import { Link } from '@inertiajs/react';
-import TomSkyShopLogo from '../../../assets/Tomskyshop_logo.png';
+import TomSkyShopLogo from '../../../assets/Tomskyshop_logo.webp';
 
 interface AuthLayoutProps {
     children: React.ReactNode;
