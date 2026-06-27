@@ -77,7 +77,7 @@ export default function GameShow() {
         <div className="relative h-64 md:h-96 overflow-hidden">
           {bannerMap[game.slug] || game.banner_url ? (
             <img
-              src={bannerMap[game.slug] || game.banner_url}
+              src={bannerMap[game.slug] ?? game.banner_url ?? undefined}
               alt={game.name}
               className="w-full h-full object-cover"
             />
