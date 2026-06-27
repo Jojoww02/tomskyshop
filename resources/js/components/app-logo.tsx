@@ -1,4 +1,4 @@
-import TomSkyShopLogo from '../../assets/Tomskyshop_logo.png';
+import TomSkyShopLogo from '../../assets/Tomskyshop_logo.webp';
 
 export default function AppLogo() {
   return (
