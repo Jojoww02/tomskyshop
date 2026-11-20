@@ -7,8 +7,8 @@
         <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
         <meta name="application-name" content="{{ config('app.name', 'TomSkyShop') }}" />
-        <link rel="icon" type="image/png" href="{{ Vite::asset('resources/assets/Tomskyshop_logo.png') }}" />
-        <link rel="apple-touch-icon" href="{{ Vite::asset('resources/assets/Tomskyshop_logo.png') }}" />
+        <link rel="icon" type="image/webp" href="{{ Vite::asset('resources/assets/Tomskyshop_logo.webp') }}" />
+        <link rel="apple-touch-icon" href="{{ Vite::asset('resources/assets/Tomskyshop_logo.webp') }}" />
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />

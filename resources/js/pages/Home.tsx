@@ -9,18 +9,18 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
 // Import  poster
-import MobileLegendPoster from '../../assets/mobile_legend_poster.png';
-import FreeFirePoster from '../../assets/free_fire_poster.png';
-import GenshinImpactPoster from '../../assets/genshin_impact_poster.png';
-import ValorantPoster from '../../assets/valorant_poster.png';
-import PubgMobilePoster from '../../assets/pubg_mobile_poster.png';
-import LolPoster from '../../assets/lol_poster.png';
-import HonorOfKingsPoster from '../../assets/honor_of_kings_poster.png';
-import CallOfDutyPoster from '../../assets/call_of_duty_poster.png';
-import PromoImage1 from '../../assets/Promo_Image_1.png';
-import PromoImage2 from '../../assets/Promo_Image_2.png';
-import PromoImage3 from '../../assets/Promo_Image_3.png';
-import TomSkyShopLogo from '../../assets/Tomskyshop_logo.png';
+import MobileLegendPoster from '../../assets/mobile_legend_poster.webp';
+import FreeFirePoster from '../../assets/free_fire_poster.webp';
+import GenshinImpactPoster from '../../assets/genshin_impact_poster.webp';
+import ValorantPoster from '../../assets/valorant_poster.webp';
+import PubgMobilePoster from '../../assets/pubg_mobile_poster.webp';
+import LolPoster from '../../assets/lol_poster.webp';
+import HonorOfKingsPoster from '../../assets/honor_of_kings_poster.webp';
+import CallOfDutyPoster from '../../assets/call_of_duty_poster.webp';
+import PromoImage1 from '../../assets/Promo_Image_1.webp';
+import PromoImage2 from '../../assets/Promo_Image_2.webp';
+import PromoImage3 from '../../assets/Promo_Image_3.webp';
+import TomSkyShopLogo from '../../assets/Tomskyshop_logo.webp';
 
 // Map game slugs to poster images
 const posterMap: Record<string, string> = {
