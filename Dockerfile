@@ -13,11 +13,14 @@ RUN npm ci --no-audit --no-fund
 COPY . .
 RUN npm run build
 
-
 ########################################
 # Stage 2 - Install PHP (Composer) dependencies
+# Gunakan php:8.3-cli + copy binary Composer agar
+# composer berjalan di atas PHP 8.3 (sesuai runtime)
 ########################################
-FROM composer:2-php8.3 AS vendor
+FROM php:8.3-cli AS vendor
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /app
 
@@ -29,13 +32,11 @@ RUN composer install \
         --prefer-dist \
         --optimize-autoloader
 
-
 ########################################
 # Stage 3 - Runtime (Apache + PHP 8.3)
 ########################################
 FROM php:8.3-apache
 
-# System libraries + PHP extensions (PostgreSQL, bcmath, opcache) and mod_rewrite
 RUN apt-get update && apt-get install -y --no-install-recommends \
         libpq-dev \
         unzip \
@@ -44,27 +45,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Serve directly from Laravel's /public and allow .htaccess rewrites
 RUN sed -ri 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/000-default.conf \
     && sed -ri 's!<Directory /var/www/>!<Directory /var/www/html/public>!g' /etc/apache2/apache2.conf \
     && sed -ri 's!AllowOverride None!AllowOverride All!g' /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html
 
-# Application code
 COPY . .
 
-# Dependencies and compiled assets produced by the previous stages
 COPY --from=vendor /app/vendor ./vendor
 COPY --from=assets /app/public/build ./public/build
 
-# Entrypoint: warm caches, run migrations, then start Apache
 COPY docker/start.sh /usr/local/bin/start.sh
 RUN chmod +x /usr/local/bin/start.sh \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Render routes traffic to the port in $PORT (default 10000)
 EXPOSE 10000
 
 CMD ["/usr/local/bin/start.sh"]
